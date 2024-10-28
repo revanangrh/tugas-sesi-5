@@ -1,0 +1,110 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Fruit {
+    String name;
+    int price;
+
+    public Fruit(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class CartItem {
+    Fruit fruit;
+    int quantity;
+
+    public CartItem(Fruit fruit, int quantity) {
+        this.fruit = fruit;
+        this.quantity = quantity;
+    }
+
+    public int getSubtotal() {
+        return fruit.price * quantity;
+    }
+}
+
+public class BelanjaBuah_Revan {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // List of fruits
+        ArrayList<Fruit> fruits = new ArrayList<>();
+        fruits.add(new Fruit("apel", 35000));
+        fruits.add(new Fruit("jeruk", 50000));
+        fruits.add(new Fruit("mangga", 10000)); // changed to match image
+        fruits.add(new Fruit("duku", 15000));
+        fruits.add(new Fruit("semangka", 20000));
+
+        // Shopping cart
+        ArrayList<CartItem> cart = new ArrayList<>();
+        int choice;
+
+        while (true) {
+            // Display menu
+            System.out.println("\nMenu:");
+            System.out.println("1. Beli Buah");
+            System.out.println("2. Struk Belanja");
+            System.out.println("3. Keluar");
+            System.out.print("Masukkan pilihan: ");
+            choice = scanner.nextInt();
+
+            if (choice == 1) {
+                // Display fruits
+                System.out.println("Pilih Buah (0-4): ");
+                for (int i = 0; i < fruits.size(); i++) {
+                    System.out.println(i + ". " + fruits.get(i).name + " - " + fruits.get(i).price);
+                }
+                System.out.print("Pilih Buah (0-4): ");
+                int fruitChoice = scanner.nextInt();
+
+                if (fruitChoice < 0 || fruitChoice >= fruits.size()) {
+                    System.out.println("Pilihan tidak valid.");
+                    continue;
+                }
+
+                System.out.print("Masukkan jumlah: ");
+                int quantity = scanner.nextInt();
+
+                cart.add(new CartItem(fruits.get(fruitChoice), quantity));
+
+                System.out.print("Input lagi? (y/n): ");
+                scanner.nextLine(); // consume newline
+                String again = scanner.nextLine();
+                if (!again.equalsIgnoreCase("y")) {
+                    break;
+                }
+
+            } else if (choice == 2) {
+                // Display receipt
+                System.out.println("\nDaftar Belanja:");
+                System.out.println("=======================================");
+                System.out.printf("%-3s %-10s %-6s %-8s %-10s%n", "No", "Nama Buah", "Jumlah", "Harga", "Subtotal");
+
+                int total = 0;
+                for (int i = 0; i < cart.size(); i++) {
+                    CartItem item = cart.get(i);
+                    int subtotal = item.getSubtotal();
+                    System.out.printf("%-3d %-10s %-6d %-8d %-10d%n", (i + 1), item.fruit.name, item.quantity, item.fruit.price, subtotal);
+                    total += subtotal;
+                }
+
+                double discount = total * 0.15;
+                double totalPay = total - discount;
+
+                System.out.println("=======================================");
+                System.out.println("Total: " + total);
+                System.out.printf("Discount(15%%): %.0f%n", discount);
+                System.out.println("Total bayar: " + (int) totalPay);
+
+            } else if (choice == 3) {
+                System.out.println("Terima kasih!");
+                break;
+            } else {
+                System.out.println("Pilihan tidak valid.");
+            }
+        }
+        scanner.close();
+    }
+}
